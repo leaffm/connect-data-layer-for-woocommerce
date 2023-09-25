@@ -174,6 +174,8 @@ add_action( 'woocommerce_add_to_cart', 'generate_add_to_cart', 10, 6 );
  *
 */
 function generate_view_content() {
+    // Define Page type
+    $page_type = get_page_type();
     /** is_product() verifies if we are in a product page and if the product has loaded so we can use the $product object. */
     if ( is_product() ) {
         global $product;
@@ -196,7 +198,7 @@ function generate_view_content() {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
             'event': 'view_item',
-            'pageType': 'Product',
+            'pageType': '<?php echo $page_type; ?>',
             'ecommerce': {
                 'shop_id': '<?php echo $store_id; ?>',
                 'currency': '<?php echo $currency; ?>',
@@ -230,6 +232,8 @@ add_action( 'woocommerce_before_single_product', 'generate_view_content' );
  *
 */
 function generate_initiate_checkout() {
+    // Define Page type
+    $page_type = get_page_type();
     /** Verifies the cart is not empty. */
     if ( ! empty( WC()->cart->get_cart() ) ) {
         $currency = get_woocommerce_currency();
@@ -278,7 +282,7 @@ function generate_initiate_checkout() {
 
         $data_layer = array(
             'event' => 'initiate_checkout',
-            'pageType' => 'Initiate Checkout',
+            'pageType' => $page_type,
             'ecommerce' => array(
                 'shop_id' => $store_id,
                 'currency' => $currency,
@@ -467,6 +471,8 @@ function get_variation_name( $variation_id, $product_name ) {
 
 /** Generates the Purchase event */
 function generate_purchase_event( $order_id ) {
+    // Define Page type
+    $page_type = get_page_type();
     /** Check if the thankyou hook has already been triggered for this order */
     if ( ! WC()->session->get( 'thankyou_triggered_' . $order_id ) ) {
         /** Get the order object */
@@ -521,7 +527,7 @@ function generate_purchase_event( $order_id ) {
 
         /** Build the data layer event */
         $data_layer = array(
-            'pageType' => 'Thank You Page',
+            'pageType' => 'thank you page',
             'event' => 'purchase',
             'ecommerce' => array(
                 'transaction_number' => $transaction_id,
