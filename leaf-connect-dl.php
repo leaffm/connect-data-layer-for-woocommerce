@@ -471,8 +471,6 @@ function get_variation_name( $variation_id, $product_name ) {
 
 /** Generates the Purchase event */
 function generate_purchase_event( $order_id ) {
-    // Define Page type
-    $page_type = get_page_type();
     /** Check if the thankyou hook has already been triggered for this order */
     if ( ! WC()->session->get( 'thankyou_triggered_' . $order_id ) ) {
         /** Get the order object */
