@@ -4,12 +4,24 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class Leaf_CDL {
 
     public function __construct() {
-        add_action( 'wp_head',                        [ $this, 'generate_page_view' ], 1 );
-        add_action( 'woocommerce_add_to_cart',        [ $this, 'queue_add_to_cart' ], 10, 6 );
-        add_action( 'wp_footer',                      [ $this, 'flush_add_to_cart_queue' ] );
-        add_action( 'woocommerce_before_single_product', [ $this, 'generate_view_item' ] );
-        add_action( 'woocommerce_before_checkout_form',  [ $this, 'generate_initiate_checkout' ] );
-        add_action( 'woocommerce_thankyou',           [ $this, 'generate_purchase' ] );
+        add_action( 'wp_head', [ $this, 'generate_page_view' ], 1 );
+
+        if ( '1' === Leaf_CDL_Settings::get( 'event_add_to_cart', '1' ) ) {
+            add_action( 'woocommerce_add_to_cart', [ $this, 'queue_add_to_cart' ], 10, 6 );
+            add_action( 'wp_footer',               [ $this, 'flush_add_to_cart_queue' ] );
+        }
+
+        if ( '1' === Leaf_CDL_Settings::get( 'event_view_item', '1' ) ) {
+            add_action( 'woocommerce_before_single_product', [ $this, 'generate_view_item' ] );
+        }
+
+        if ( '1' === Leaf_CDL_Settings::get( 'event_initiate_checkout', '1' ) ) {
+            add_action( 'woocommerce_before_checkout_form', [ $this, 'generate_initiate_checkout' ] );
+        }
+
+        if ( '1' === Leaf_CDL_Settings::get( 'event_purchase', '1' ) ) {
+            add_action( 'woocommerce_thankyou', [ $this, 'generate_purchase' ] );
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -143,13 +155,13 @@ class Leaf_CDL {
         <script id="leaf-cdl-page-view" data-nowprocket>
         (function() {
             var data = <?php echo wp_json_encode( $data ); ?>;
-            data.page_title    = document.title;
-            data.page_location = window.location.href;
 
             var script = document.createElement('script');
             script.src = <?php echo wp_json_encode( $script_url ); ?>;
             script.onload = function() {
                 setTimeout(function() {
+                    data.page_title    = document.title;
+                    data.page_location = window.location.href;
                     window.dataLayer = window.dataLayer || [];
                     window.dataLayer.push(data);
                 }, 250);

@@ -4,6 +4,17 @@ All notable changes to Leaf Signal will be documented in this file.
 
 ---
 
+## [2.2.0] - 2026-04-23
+
+### Added
+- **Events section** on the settings page to enable or disable individual data layer events. Each event (`add_to_cart`, `view_item`, `initiate_checkout`, `purchase`) has its own checkbox toggle. All events default to enabled, so existing installs are unaffected until an admin explicitly disables one.
+
+### Changed
+- **`page_view` event is now always-on** and excluded from the event toggles. Since it also loads the tracking script, disabling it would silently break all other events.
+- **`page_title` in `page_view`** is now read inside the `setTimeout` callback instead of at script execution time. This fixes an issue where `document.title` was empty on themes that output the `<title>` tag via `wp_head` at the same priority as the plugin script.
+
+---
+
 ## [2.1.0] - 2026-03-12
 
 ### Added

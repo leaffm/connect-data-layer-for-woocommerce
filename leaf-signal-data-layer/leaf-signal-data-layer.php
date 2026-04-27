@@ -3,7 +3,7 @@
  * Plugin Name: Leaf Signal
  * Plugin URI:  https://leafgrow.io/
  * Description: Generates a WooCommerce Data Layer for ecommerce tracking.
- * Version:     2.0.0
+ * Version:     2.2.0
  * Author:      Leaf
  * Author URI:  https://leafgrow.io/
  * Requires Plugins: woocommerce

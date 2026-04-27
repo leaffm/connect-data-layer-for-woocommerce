@@ -57,12 +57,59 @@ class Leaf_CDL_Settings {
             'leaf_cdl_main',
             [ 'key' => 'script_url' ]
         );
+
+        add_settings_section( 'leaf_cdl_events', 'Events', [ $this, 'render_events_section' ], 'leaf-cdl-settings' );
+
+        $event_fields = [
+            'event_view_item'         => 'View Item',
+            'event_add_to_cart'       => 'Add to Cart',
+            'event_initiate_checkout' => 'Begin Checkout',
+            'event_purchase'          => 'Purchase',
+        ];
+
+        foreach ( $event_fields as $key => $label ) {
+            add_settings_field(
+                'leaf_cdl_' . $key,
+                $label,
+                [ $this, 'render_checkbox_field' ],
+                'leaf-cdl-settings',
+                'leaf_cdl_events',
+                [ 'key' => $key ]
+            );
+        }
     }
 
     public function sanitize( $input ) {
-        return [
+        $event_keys = [
+            'event_add_to_cart',
+            'event_view_item',
+            'event_initiate_checkout',
+            'event_purchase',
+        ];
+
+        $output = [
             'script_url' => esc_url_raw( $input['script_url'] ?? '' ),
         ];
+
+        foreach ( $event_keys as $key ) {
+            $output[ $key ] = isset( $input[ $key ] ) ? '1' : '0';
+        }
+
+        return $output;
+    }
+
+    public function render_events_section() {
+        echo '<p>Enable or disable individual tracking events.</p>';
+    }
+
+    public function render_checkbox_field( $args ) {
+        $value = self::get( $args['key'], '1' );
+        printf(
+            '<input type="checkbox" name="%s[%s]" value="1"%s>',
+            esc_attr( self::OPTION_KEY ),
+            esc_attr( $args['key'] ),
+            checked( '1', $value, false )
+        );
     }
 
     public function render_field( $args ) {
